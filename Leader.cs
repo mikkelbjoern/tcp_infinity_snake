@@ -11,7 +11,6 @@ using System.Net.Sockets;
 public class Leader
 {
     
-        static private TcpClient tcpClient;
         private string ip;
         private int port;
     
@@ -29,7 +28,7 @@ public class Leader
         // and should be run continously sending commands
         public void sendCommand(string command)
         {
-            tcpClient = new TcpClient(ip, port);
+            TcpClient tcpClient = new TcpClient(ip, port);
             // Get the stream from the TCP client
             NetworkStream stream = tcpClient.GetStream();
             // Create a buffer to store the data
