@@ -37,7 +37,7 @@ public class Follower
         // Get the stream from the TCP client
         NetworkStream stream = tcpClient.GetStream();
         // Create a buffer to store the data
-        Byte[] data = new Byte[512];
+        Byte[] data = new Byte[1024];
         // Read the data from the stream
         stream.Read(data, 0, data.Length);
         Logger.Debug($"Received data: {System.Text.Encoding.ASCII.GetString(data)}");
