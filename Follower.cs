@@ -17,6 +17,11 @@ public class Follower
     {
         // Create a TCP listener on the specified port
         tcpListener = new TcpListener(ip, port);
+
+        // Make sure that the TCP listener isn't sending RST ACK
+        // when client tries to connect
+        tcpListener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+
         // Start the TCP listener
         tcpListener.Start();
         Logger.Debug($"Follower created with IP {ip} and port {port}");
@@ -70,7 +75,9 @@ public class Follower
             // Print each character in the line
             for (int k = 0; k < lines[j].Length; k++)
             {
+                Console.BackgroundColor = ConsoleColor.Green;
                 Console.Write(lines[j][k]);
+                Console.ResetColor();
             }
 
             Console.Write("│");

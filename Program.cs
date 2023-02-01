@@ -5,12 +5,14 @@
 
 int port = 5000; // port to use
 
+Console.WriteLine("Starting server");
+
 // Check that two arguments are passed
 if (args.Length != 2)
 {
     Logger.Error("Invalid number of arguments");
     Logger.Error("Usage: dotnet run [leader|follower] [ip]");
-    return;
+    Environment.Exit(1);
 }
 
 // Check that the first argument is either "leader" or "follower"
@@ -18,7 +20,7 @@ if (args[0] != "leader" && args[0] != "follower")
 {
     Logger.Error("Invalid first argument");
     Logger.Error("Usage: dotnet run [leader|follower] [ip]");
-    return;
+    Environment.Exit(1);
 }
 
 
@@ -34,14 +36,18 @@ catch (System.FormatException)
 {
     Logger.Error("Invalid IP address");
     Logger.Error("Usage: dotnet run [leader|follower] [ip]");
-    return;
+    Environment.Exit(1);
 }
+
+Console.WriteLine("Starting client");
 
 // if the first argument is "leader" then create a leader
 if (args[0] == "leader")
 {
     // Set thread name to LeaderMain
     Thread.CurrentThread.Name = "LeaderMain";
+
+    ip = System.Net.IPAddress.Parse(args[1]);
 
     // create a leader
     Leader leader = new Leader(ip, port);
@@ -96,8 +102,7 @@ if (args[0] == "leader")
     thread.Name = "ControlThread";
 
     thread.Start();
-    // Show 5 steps of the game
-    for (int i = 0; i < 50; i++)
+    while (true)
     {
         
         string leaderView = game.View(true);
@@ -174,6 +179,7 @@ if (args[0] == "leader")
 // if the first argument is "follower" then create a follower
 else if (args[0] == "follower")
 {
+    ip = System.Net.IPAddress.Parse(args[1]);
     // Set thread name to FollowerMain
     Thread.CurrentThread.Name = "FollowerMain";
     // create a follower
