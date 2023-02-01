@@ -11,7 +11,7 @@ Console.WriteLine("Starting server");
 if (args.Length != 2)
 {
     Logger.Error("Invalid number of arguments");
-    Logger.Error("Usage: dotnet run [leader|follower] [ip]");
+    Logger.Error("Usage: dotnet run [leader|follower] [follower-ip]");
     Environment.Exit(1);
 }
 
@@ -19,7 +19,7 @@ if (args.Length != 2)
 if (args[0] != "leader" && args[0] != "follower")
 {
     Logger.Error("Invalid first argument");
-    Logger.Error("Usage: dotnet run [leader|follower] [ip]");
+    Logger.Error("Usage: dotnet run [leader|follower] [follower-ip]");
     Environment.Exit(1);
 }
 
