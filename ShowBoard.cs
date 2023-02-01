@@ -84,18 +84,18 @@ public class ShowBoard : FollowerCommand
         string[] parts = serialized.Split(',');
         if (parts.Length != 2)
         {
-            Logger.Error($"Invalid serialized command '{serialized}'");
+            Logger.Error($"Invalid serialized command, expected 2 parts but got {parts.Length}");
             Environment.Exit(1);
         }
         if (parts[0] != "ShowBoard")
         {
-            Logger.Error($"Invalid serialized command '{serialized}'");
+            Logger.Error($"Invalid serialized command, expected 'ShowBoard' but got '{parts[0]}'");
             Environment.Exit(1);
         }
         string[] stateParts = parts[1].Split('|');
         if (stateParts.Length != 2)
         {
-            Logger.Error($"Invalid serialized command '{serialized}'");
+            Logger.Error($"Invalid serialized command, expected 2 parts in data (seperated by |) but got {stateParts.Length}");
             Environment.Exit(1);
         }
         string stateString = stateParts[1];
