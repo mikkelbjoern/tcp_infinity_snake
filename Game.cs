@@ -155,6 +155,9 @@ public class Game
     // Steps the game forward one step
     public void Step()
     {
+        // Add the player's position to the tail
+        tail.Add(new Tuple<int, int>(playerX, playerY));
+
         // Move the player
         switch (direction)
         {
@@ -191,10 +194,6 @@ public class Game
             GameOver();
             return;
         }
-
-        // Add the player's position to the tail
-        tail.Add(new Tuple<int, int>(playerX, playerY));
-
 
         // Clear the game state
         for (int y = 0; y < yHeight; y++)

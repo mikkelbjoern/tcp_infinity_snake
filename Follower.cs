@@ -8,7 +8,6 @@ using System.Net.Sockets;
 
 public class Follower
 {
-
     private TcpListener tcpListener;
 
     // Constructor
