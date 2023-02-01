@@ -51,12 +51,6 @@ if (args[0] == "leader")
 
     // create a leader
     Leader leader = new Leader(ip, port);
-    // Send 10 commands to the follower in 1 sec intervals
-    // for (int i = 0; i < 10; i++)
-    // {
-    //     leader.sendCommand($"Hello world! {i}");
-    //     Thread.Sleep(1000);
-    // }
 
     // Create a new game
     Game game = new Game();
@@ -186,7 +180,7 @@ if (args[0] == "leader")
 
 
         // Wait for a second
-        Thread.Sleep(1000);
+        Thread.Sleep(400);
 
         game.Step();
 
