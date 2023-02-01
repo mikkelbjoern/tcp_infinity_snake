@@ -98,8 +98,23 @@ public class ShowBoard : FollowerCommand
             Logger.Error($"Invalid serialized command '{serialized}'");
             Environment.Exit(1);
         }
-        string stateString = stateParts[0];
-        int score = int.Parse(stateParts[1]);
+        string stateString = stateParts[1];
+        
+        // Split the score from the state by splitting on the pipe character
+        if (!stateString.Split('|').Length.Equals(2))
+        {
+            Logger.Error($"Invalid serialized command. Either too many or too few pipe characters '{serialized}'");
+            Environment.Exit(1);
+        }
+        string[] scoreParts = stateString.Split('|');
+        if (!int.TryParse(scoreParts[1], out int score))
+        {
+            Logger.Error($"Invalid serialized command. Score is not an integer '{serialized}'");
+            Environment.Exit(1);
+        }
+        stateString = scoreParts[0];
+
+
         Game.Field[,] state = new Game.Field[Snake.Settings.xWidthFollower, Snake.Settings.yHeightFollower];
         for (int x = 0; x < 30; x++)
         {
