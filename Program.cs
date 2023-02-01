@@ -148,6 +148,8 @@ if (args[0] == "leader")
 
         string[] lines = leaderView.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
         Logger.Debug($"Length of lines: {lines.Length}");
+
+        Console.WriteLine($"Leader monitor | Score: {game.score}");
         for (int j = 0; j < lines.Length; j++)
         {
             // Skip the printing if line is empty

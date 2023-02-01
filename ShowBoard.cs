@@ -132,14 +132,19 @@ public class ShowBoard : FollowerCommand
         Console.Clear();
 
         // Write on the first line that this is the second monitor
-        Console.WriteLine($"Second monitor | Score: {score}", ConsoleColor.DarkGray);
+        Console.WriteLine($"Follower monitor | Score: {score}", ConsoleColor.DarkGray);
+
+        // Make a line above the game state the length of the Follower screen
+        Console.WriteLine("┌" + new string('─', Snake.Settings.xWidthFollower) + "┐");
 
         // Write the game state
         for (int y = 0; y < state.GetLength(1); y++)
         {
-
             // The portal is always on the left side of the screen for follower
-            Console.Write(" ", ConsoleColor.Yellow);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write("│");
+            Console.ResetColor();
+
             for (int x = 0; x < state.GetLength(0); x++)
             {
                 switch (state[x, y])
@@ -150,7 +155,7 @@ public class ShowBoard : FollowerCommand
                         Console.ResetColor();
                         break;
                     case Field.Snake:
-                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        Console.ForegroundColor = ConsoleColor.Green;
                         Console.Write("x");
                         Console.ResetColor();
                         break;
@@ -166,8 +171,12 @@ public class ShowBoard : FollowerCommand
                         break;
                 }
             }
+            Console.Write("│");
+
             Console.WriteLine();
         }
+        // Bottom line
+        Console.WriteLine("└" + new string('─', Snake.Settings.xWidthFollower) + "┘");
     }
 
 }
