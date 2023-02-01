@@ -54,6 +54,7 @@ public class Follower
 
     private FollowerCommand parseCommand(string command)
     {
+        Logger.Debug($"Parsing command: {command}");
         // Parse the command by first finding the command type (before ,)
         string commandType = command.Substring(0, command.IndexOf(','));
 

@@ -76,7 +76,9 @@ public class ShowBoard : FollowerCommand
 
     public string Serialize()
     {
-        return $"{commandType},{stateToString(state)}|{score}";
+        string command = $"{commandType},{stateToString(state)}|{score}";
+        Logger.Debug($"Serialized command: {command}");
+        return command;
     }
 
     public static FollowerCommand Deserialize(string serialized)
