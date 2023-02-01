@@ -5,6 +5,38 @@
 
 int port = 5000; // port to use
 
+// Check that two arguments are passed
+if (args.Length != 2)
+{
+    Logger.Error("Invalid number of arguments");
+    Logger.Error("Usage: dotnet run [leader|follower] [ip]");
+    return;
+}
+
+// Check that the first argument is either "leader" or "follower"
+if (args[0] != "leader" && args[0] != "follower")
+{
+    Logger.Error("Invalid first argument");
+    Logger.Error("Usage: dotnet run [leader|follower] [ip]");
+    return;
+}
+
+
+// Define a variable to store the IP address
+System.Net.IPAddress ip;
+
+// Check that the second argument is a valid IP address
+try
+{
+    ip = System.Net.IPAddress.Parse(args[1]);
+}
+catch (System.FormatException)
+{
+    Logger.Error("Invalid IP address");
+    Logger.Error("Usage: dotnet run [leader|follower] [ip]");
+    return;
+}
+
 // if the first argument is "leader" then create a leader
 if (args[0] == "leader")
 {
@@ -12,7 +44,7 @@ if (args[0] == "leader")
     Thread.CurrentThread.Name = "LeaderMain";
 
     // create a leader
-    Leader leader = new Leader("127.0.0.1", port);
+    Leader leader = new Leader(ip, port);
     // Send 10 commands to the follower in 1 sec intervals
     // for (int i = 0; i < 10; i++)
     // {
@@ -145,7 +177,7 @@ else if (args[0] == "follower")
     // Set thread name to FollowerMain
     Thread.CurrentThread.Name = "FollowerMain";
     // create a follower
-    Follower follower = new Follower("127.0.0.1", port);
+    Follower follower = new Follower(ip, port);
     // Wait for the follower to receive a command
     while (true)
     {

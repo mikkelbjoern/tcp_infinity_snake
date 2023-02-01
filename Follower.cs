@@ -13,12 +13,13 @@ public class Follower
     // Constructor
     // When a Follower has finished its construction, 
     // it has established connection with the Leader.
-    public Follower(string ip, int port)
+    public Follower(System.Net.IPAddress ip, int port)
     {
         // Create a TCP listener on the specified port
-        tcpListener = new TcpListener(System.Net.IPAddress.Parse(ip), port);
+        tcpListener = new TcpListener(ip, port);
         // Start the TCP listener
         tcpListener.Start();
+        Logger.Debug($"Follower created with IP {ip} and port {port}");
     }
 
     // Accepts a command from the Leader

@@ -17,10 +17,11 @@ public class Leader
         // Constructor
         // When a Leader has finished its construction, 
         // it has established connection with the Follower.
-        public Leader(string ip, int port)
+        public Leader(System.Net.IPAddress ip, int port)
         {
-            this.ip = ip;
+            this.ip = ip.ToString();
             this.port = port;
+            Logger.Debug($"Leader created with IP {this.ip} and port {this.port}");
         }
     
         // Sends a command to the follower
