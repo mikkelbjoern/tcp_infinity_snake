@@ -19,16 +19,16 @@ public class Game
 
     private enum Direction { North, East, South, West };
 
-    private enum Field { Snake, SnakeHead, Apple, Empty };
+    public enum Field { Snake, SnakeHead, Apple, Empty };
 
     // The game state
-    private Field[,] state;
+    public Field[,] state;
 
     // The player's position
     private int playerX;
     private int playerY;
 
-    private int score = 0;
+    public int score = 0;
 
     private Direction direction = Direction.East;
 
@@ -40,8 +40,8 @@ public class Game
     private List<Tuple<int, int>> tail = new List<Tuple<int, int>>();
 
     // The width and height of the game state
-    private int xWidth = 30;
-    private int yHeight = 10;
+    private int xWidth = Snake.Settings.xWidth;
+    private int yHeight = Snake.Settings.yHeight;
 
     // The constructor
     public Game()
@@ -122,8 +122,8 @@ public class Game
         StringBuilder sb = new StringBuilder();
 
         // Divide the x-axis into 2 parts one for leader and one for follower
-        int xWidthLeader = xWidth / 2;
-        int xWidthFollower = xWidth - xWidthLeader;
+        int xWidthLeader = Snake.Settings.xWidthLeader;
+        int xWidthFollower = Snake.Settings.xWidthFollower;
 
         Logger.Debug($"Width of leader: {xWidthLeader}, width of follower: {xWidthFollower}");
 

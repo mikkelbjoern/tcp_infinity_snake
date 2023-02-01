@@ -41,52 +41,28 @@ public class Follower
         // Read the data from the stream
         stream.Read(data, 0, data.Length);
         Logger.Debug($"Received data: {System.Text.Encoding.ASCII.GetString(data)}");
+
+        // Parse the command
+        FollowerCommand command = parseCommand(System.Text.Encoding.ASCII.GetString(data));
+        // Execute the command
+        command.Execute(); 
         
-        printData(System.Text.Encoding.ASCII.GetString(data));
+
         // Close the TCP client
         tcpClient.Close();
     }
 
-    private void printData(string data)
+    private FollowerCommand parseCommand(string command)
     {
-        // Clear the screen
-        Console.Clear();
+        // Parse the command by first finding the command type (before ,)
+        string commandType = command.Substring(0, command.IndexOf(','));
 
-        // Write on the first line that this is the second monitor
-        Console.WriteLine("Second monitor", ConsoleColor.DarkGray);
-
-        // Split the data into lines
-        string[] lines = data.Split(Environment.NewLine);
-
-        // Print each line
-        for (int j = 0; j < lines.Length; j++)
-        {
-            // Print a line at the top of the screen
-            if (j == 0)
-            {
-                Console.WriteLine("┌" + new string('─', lines[j].Length) + "┐");
-            }
-
-            Console.BackgroundColor = ConsoleColor.Yellow;
-            Console.Write("│");
-            Console.ResetColor();
-
-
-            // Print each character in the line
-            for (int k = 0; k < lines[j].Length; k++)
-            {
-                Console.BackgroundColor = ConsoleColor.Green;
-                Console.Write(lines[j][k]);
-                Console.ResetColor();
-            }
-
-            Console.Write("│");
-            Console.WriteLine();
+        // Check what command type it is
+        if (commandType == "ShowBoard") {
+            // Create a new ShowBoardCommand
+            return ShowBoard.Deserialize(command);
         }
-
-        // Print a line at the bottom of the screen
-        Console.WriteLine("└" + new string('─', lines[1].Length) + "┘");
-
+        return null;
     }
 
 }

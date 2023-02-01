@@ -27,13 +27,13 @@ public class Leader
         // Sends a command to the follower
         // This method will block until the follower has received the command
         // and should be run continously sending commands
-        public void sendCommand(string command)
+        public void sendCommand(FollowerCommand command)
         {
             TcpClient tcpClient = new TcpClient(ip, port);
             // Get the stream from the TCP client
             NetworkStream stream = tcpClient.GetStream();
             // Create a buffer to store the data
-            Byte[] data = System.Text.Encoding.ASCII.GetBytes(command);
+            Byte[] data = System.Text.Encoding.ASCII.GetBytes(command.Serialize());
             // Write the data to the stream
             stream.Write(data, 0, data.Length);
             // Close the TCP client
