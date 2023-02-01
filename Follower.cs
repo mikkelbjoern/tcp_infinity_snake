@@ -34,6 +34,10 @@ public class Follower
         Byte[] data = new Byte[256];
         // Read the data from the stream
         stream.Read(data, 0, data.Length);
+        Logger.Debug($"Received data: {System.Text.Encoding.ASCII.GetString(data)}");
+        
+        // Clear the screen
+        Console.Clear();
         // Print the data to the console (for now) with green text
         Console.WriteLine(System.Text.Encoding.ASCII.GetString(data), ConsoleColor.Green);
         // Close the TCP client

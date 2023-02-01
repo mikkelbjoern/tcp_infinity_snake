@@ -8,6 +8,9 @@ int port = 5000; // port to use
 // if the first argument is "leader" then create a leader
 if (args[0] == "leader")
 {
+    // Set thread name to LeaderMain
+    Thread.CurrentThread.Name = "LeaderMain";
+
     // create a leader
     Leader leader = new Leader("127.0.0.1", port);
     // Send 10 commands to the follower in 1 sec intervals
@@ -23,6 +26,7 @@ if (args[0] == "leader")
     // Have a thread that listens for keystrokes
     Thread thread = new Thread(() =>
     {
+        Logger.Debug("Starting control thread");
         // Listen for keystrokes
         while (true)
         {
@@ -56,12 +60,22 @@ if (args[0] == "leader")
         }
     });
 
+    // Set thread name
+    thread.Name = "ControlThread";
+
     thread.Start();
     // Show 5 steps of the game
     for (int i = 0; i < 50; i++)
     {
         
-        string view = game.View();
+        string leaderView = game.View(true);
+        string followerView = game.View(false);
+
+
+
+        // Send the game state to the follower
+        leader.sendCommand(followerView);
+
         // Draw the game with a border,
         // orange for the snake head and body,
         // red for the apple and
@@ -71,51 +85,49 @@ if (args[0] == "leader")
 
         // Check if the game is over and don't format the string if it is
         // Just check if the string "game over" is in the string
-        if (view.ToLower().Contains("game over"))
+        if (leaderView.ToLower().Contains("game over"))
         {
-            Console.WriteLine(view);
+            Console.WriteLine(leaderView);
+            Logger.Debug("Game over");
             break;
         }
 
-        string[] lines = view.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-        Console.WriteLine("┌" + new string('─', lines[0].Length) + "┐");
+        string[] lines = leaderView.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+        Logger.Debug($"Length of lines: {lines.Length}");
         for (int j = 0; j < lines.Length; j++)
         {
             // Skip the printing if line is empty
-            if (lines[j].Length == 0)
+            if (lines[j].Length == 0) {
+                // Print to System.Err that the line is empty with a timestamp
+                // and the line number
+                Logger.Debug($"{DateTime.Now} Line {j} is empty");
                 continue;
-
-            Console.Write("│" );
-            for (int k = 0; k < lines[j].Length ; k++)
-            {
-
-                if (lines[j][k] == 'X')
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    Console.Write("X");
-                    Console.ResetColor();
-                }
-                else if (lines[j][k] == 'x')
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    Console.Write("x");
-                    Console.ResetColor();
-                }
-                else if (lines[j][k] == 'O')
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
-                    Console.Write("O");
-                    Console.ResetColor();
-                }
-                else
-                {
-                    Console.Write(" ");
-                    Console.ResetColor();
-                }
             }
-            Console.WriteLine("│");
+
+            // Print a line at the top of the screen
+            if (j == 0)
+            {
+                Console.WriteLine("┌" + new string('─', lines[j].Length) + "┐");
+            }
+
+            Console.Write("│", ConsoleColor.DarkGray);
+
+            // Print each character in the line
+            for (int k = 0; k < lines[j].Length; k++)
+            {
+                Console.Write(lines[j][k]);
+            }
+            // Print single character with a yellow color
+            Console.BackgroundColor = ConsoleColor.Yellow;
+            Console.Write("│");
+            Console.ResetColor();
+
+            Console.WriteLine();
+
         }
-        Console.WriteLine("└" + new string('─', lines[0].Length) + "┘");
+        // Sometimes index 0 is empty so use length of 1
+        Console.WriteLine("└" + new string('─', lines[1].Length) + "┘");
+
 
         // Wait for a second
         Thread.Sleep(1000);
@@ -128,6 +140,8 @@ if (args[0] == "leader")
 // if the first argument is "follower" then create a follower
 else if (args[0] == "follower")
 {
+    // Set thread name to FollowerMain
+    Thread.CurrentThread.Name = "FollowerMain";
     // create a follower
     Follower follower = new Follower("127.0.0.1", port);
     // Wait for the follower to receive a command

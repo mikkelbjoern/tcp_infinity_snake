@@ -10,6 +10,7 @@
 // the code around the Game class.
 
 using System.Text;
+using static Logger;
 
 public class Game
 {
@@ -39,7 +40,7 @@ public class Game
     private List<Tuple<int, int>> tail = new List<Tuple<int, int>>();
 
     // The width and height of the game state
-    private int xWidth = 20;
+    private int xWidth = 30;
     private int yHeight = 10;
 
     // The constructor
@@ -70,6 +71,7 @@ public class Game
     // Generates an apple in a random position
     private void generateApple()
     {
+        Logger.Debug("Generating apple");
         // Generate a random position
         int x = new Random().Next(0, xWidth);
         int y = new Random().Next(0, yHeight);
@@ -88,6 +90,7 @@ public class Game
     // Updates the game state based on user input
     public void Update(Action action)
     {
+        Logger.Debug($"Updating game with action {action}");
         // Update the direction based on the action
         switch (action)
         {
@@ -107,21 +110,32 @@ public class Game
     }
 
     // Returns the game state as a string
-    public string View()
+    public string View(bool isLeader)
     {
         // If the game is over, write Game over in ascii art
         if (gameOver)
         {
-            return "Game Over!";
+            return "Game Over! Score: " + score;
         }
 
         // Create a new string builder
         StringBuilder sb = new StringBuilder();
 
+        // Divide the x-axis into 2 parts one for leader and one for follower
+        int xWidthLeader = xWidth / 2;
+        int xWidthFollower = xWidth - xWidthLeader;
+
+        Logger.Debug($"Width of leader: {xWidthLeader}, width of follower: {xWidthFollower}");
+
+        int xStart = isLeader ? 0 : xWidthLeader;
+        int xEnd = isLeader ? xWidthLeader : xWidth;
+
+        Logger.Debug($"Viewing game state for {isLeader} from {xStart} to {xEnd}");
+
         // Loop through the game state
         for (int y = 0; y < yHeight; y++)
         {
-            for (int x = 0; x < xWidth; x++)
+            for (int x = xStart; x < xEnd; x++)
             {
                 // If the position is empty, add a space
                 if (state[x, y] == Field.Empty)
@@ -145,7 +159,7 @@ public class Game
                 }
             }
             // Add a new line
-            sb.Append(Environment.NewLine);
+            sb.Append("\n");
         }
 
         // Return the string
