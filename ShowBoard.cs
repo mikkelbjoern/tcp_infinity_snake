@@ -145,16 +145,24 @@ public class ShowBoard : FollowerCommand
                 switch (state[x, y])
                 {
                     case Field.Empty:
-                        Console.Write(" ", ConsoleColor.Black);
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.Write(" ");
+                        Console.ResetColor();
                         break;
                     case Field.Snake:
-                        Console.Write(" ", ConsoleColor.Green);
+                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        Console.Write("x");
+                        Console.ResetColor();
                         break;
                     case Field.SnakeHead:
-                        Console.Write(" ", ConsoleColor.DarkGreen);
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write("X");
+                        Console.ResetColor();
                         break;
                     case Field.Apple:
-                        Console.Write(" ", ConsoleColor.Red);
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write("O");
+                        Console.ResetColor();
                         break;
                 }
             }
