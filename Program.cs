@@ -20,9 +20,6 @@ if (args[0] == "leader")
     // Create a new game
     Game game = new Game();
 
-    // Show the game state
-    Console.WriteLine(game.View());
-
     // Have a thread that listens for keystrokes
     Thread thread = new Thread(() =>
     {
@@ -71,6 +68,14 @@ if (args[0] == "leader")
         // gray for the empty space
 
         Console.Clear();
+
+        // Check if the game is over and don't format the string if it is
+        // Just check if the string "game over" is in the string
+        if (view.ToLower().Contains("game over"))
+        {
+            Console.WriteLine(view);
+            break;
+        }
 
         string[] lines = view.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
         Console.WriteLine("┌" + new string('─', lines[0].Length) + "┐");
