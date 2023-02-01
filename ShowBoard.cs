@@ -100,27 +100,25 @@ public class ShowBoard : FollowerCommand
             Logger.Error($"Invalid serialized command, expected 2 parts in data (seperated by -) but got {stateParts.Length}");
             Environment.Exit(1);
         }
-        string stateString = stateParts[1];
-        
-        // Split the score from the state by splitting on the pipe character
-        if (!stateString.Split('-').Length.Equals(2))
-        {
-            Logger.Error($"Invalid serialized command. Either too many or too few - characters '{serialized}'");
-            Environment.Exit(1);
-        }
-        string[] scoreParts = stateString.Split('-');
-        if (!int.TryParse(scoreParts[1], out int score))
-        {
-            Logger.Error($"Invalid serialized command. Score is not an integer '{serialized}'");
-            Environment.Exit(1);
-        }
-        stateString = scoreParts[0];
+        string stateString = stateParts[0];
 
+        if (!int.TryParse(stateParts[1], out int score))
+        {
+            Logger.Error($"Invalid serialized command. Score is not an integer '{stateParts[1]}'");
+            Environment.Exit(1);
+        }
 
         Game.Field[,] state = new Game.Field[Snake.Settings.xWidthFollower, Snake.Settings.yHeightFollower];
-        for (int x = 0; x < 30; x++)
+
+        // Make sure that the state string is the correct length
+        if (stateString.Length != Snake.Settings.xWidthFollower * Snake.Settings.yHeightFollower)
         {
-            for (int y = 0; y < 10; y++)
+            Logger.Error($"Invalid serialized command. State string is not the correct length. Expected {Snake.Settings.xWidthFollower * Snake.Settings.yHeightFollower} but got {stateString.Length}");
+            Environment.Exit(1);
+        }
+        for (int x = 0; x < Snake.Settings.xWidthFollower; x++)
+        {
+            for (int y = 0; y < Snake.Settings.yHeightFollower; y++)
             {
                 state[x, y] = deserializeField(stateString[x * Snake.Settings.yHeightFollower + y]);
             }

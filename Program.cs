@@ -111,7 +111,21 @@ if (args[0] == "leader")
         leaderView = leaderView.TrimEnd(Environment.NewLine.ToCharArray());
 
         // Create a follower command from the game state
-        FollowerCommand commandShowBoard = new ShowBoard(game.state, game.score);
+        // Seperate the game state that the follower need out
+        // That is only the right side of the board
+        // and the score
+        Game.Field[,] rightSide = new Game.Field[Snake.Settings.xWidthFollower, Snake.Settings.yHeightFollower];
+
+        // Copy the right side of the board to the rightSide array
+        for (int i = 0; i < Snake.Settings.xWidthFollower; i++)
+        {
+            for (int j = 0; j < Snake.Settings.yHeightFollower; j++)
+            {
+                rightSide[i, j] = game.state[i + Snake.Settings.xWidthLeader, j];
+            }
+        }
+
+        FollowerCommand commandShowBoard = new ShowBoard(rightSide, game.score);
 
         // Send the game state to the follower
         leader.sendCommand(commandShowBoard);

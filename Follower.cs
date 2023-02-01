@@ -45,20 +45,27 @@ public class Follower
         // Check that the data ends with a semicolon and remove it
         string receivedCommand = System.Text.Encoding.ASCII.GetString(data);
         if (receivedCommand.EndsWith(";")) {
-            receivedCommand = receivedCommand.Substring(0, receivedCommand.Length - 1);
+            Logger.Debug($"Received data ends with a semicolon, removing it (Length before: {receivedCommand.Length})");
+            // Find the index of the semicolon
+            int semicolonIndex = receivedCommand.IndexOf(';');
+            // Remove the semicolon and everything after it
+            string receivedCommandWithoutSemicolon = receivedCommand.Substring(0, semicolonIndex);
+            Logger.Debug($"Length after: {receivedCommandWithoutSemicolon.Length}");
+
+            Logger.Debug($"Received data without semicol: {receivedCommandWithoutSemicolon}");
+            // Parse the command
+            FollowerCommand command = parseCommand(receivedCommandWithoutSemicolon);
+            // Execute the command
+            command.Execute(); 
+            
+
+            // Close the TCP client
+            tcpClient.Close();
         } else {
             Logger.Error($"Received data does not end with a semicolon: {receivedCommand}");
+            Environment.Exit(1);
         }
 
-
-        // Parse the command
-        FollowerCommand command = parseCommand(receivedCommand);
-        // Execute the command
-        command.Execute(); 
-        
-
-        // Close the TCP client
-        tcpClient.Close();
     }
 
     private FollowerCommand parseCommand(string command)
