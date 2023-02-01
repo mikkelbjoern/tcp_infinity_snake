@@ -51,7 +51,7 @@ public class Follower
         Console.WriteLine("Second monitor", ConsoleColor.DarkGray);
 
         // Split the data into lines
-        string[] lines = data.Split('\n');
+        string[] lines = data.Split(Environment.NewLine);
 
         // Print each line
         for (int j = 0; j < lines.Length; j++)

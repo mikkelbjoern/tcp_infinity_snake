@@ -159,7 +159,7 @@ public class Game
                 }
             }
             // Add a new line
-            sb.Append("\n");
+            sb.Append(Environment.NewLine);
         }
 
         // Return the string
