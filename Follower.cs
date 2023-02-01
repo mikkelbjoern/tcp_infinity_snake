@@ -37,13 +37,22 @@ public class Follower
         // Get the stream from the TCP client
         NetworkStream stream = tcpClient.GetStream();
         // Create a buffer to store the data
-        Byte[] data = new Byte[256];
+        Byte[] data = new Byte[512];
         // Read the data from the stream
         stream.Read(data, 0, data.Length);
         Logger.Debug($"Received data: {System.Text.Encoding.ASCII.GetString(data)}");
 
+        // Check that the data ends with a semicolon and remove it
+        string receivedCommand = System.Text.Encoding.ASCII.GetString(data);
+        if (receivedCommand.EndsWith(";")) {
+            receivedCommand = receivedCommand.Substring(0, receivedCommand.Length - 1);
+        } else {
+            Logger.Error($"Received data does not end with a semicolon: {receivedCommand}");
+        }
+
+
         // Parse the command
-        FollowerCommand command = parseCommand(System.Text.Encoding.ASCII.GetString(data));
+        FollowerCommand command = parseCommand(receivedCommand);
         // Execute the command
         command.Execute(); 
         

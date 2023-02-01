@@ -33,7 +33,8 @@ public class Leader
             // Get the stream from the TCP client
             NetworkStream stream = tcpClient.GetStream();
             // Create a buffer to store the data
-            Byte[] data = System.Text.Encoding.ASCII.GetBytes(command.Serialize());
+            // We add a semicolon to the end of the command so the receiver knows when the command ends
+            Byte[] data = System.Text.Encoding.ASCII.GetBytes(command.Serialize() + ";");
             // Write the data to the stream
             stream.Write(data, 0, data.Length);
             // Close the TCP client
