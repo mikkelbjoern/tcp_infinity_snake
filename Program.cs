@@ -11,7 +11,7 @@ Console.WriteLine("Starting server");
 if (args.Length != 2)
 {
     Logger.Error("Invalid number of arguments");
-    Logger.Error("Usage: dotnet run [leader|follower] [ip]");
+    Logger.Error("Usage: dotnet run [leader|follower] [follower-ip]");
     Environment.Exit(1);
 }
 
@@ -19,7 +19,7 @@ if (args.Length != 2)
 if (args[0] != "leader" && args[0] != "follower")
 {
     Logger.Error("Invalid first argument");
-    Logger.Error("Usage: dotnet run [leader|follower] [ip]");
+    Logger.Error("Usage: dotnet run [leader|follower] [follower-ip]");
     Environment.Exit(1);
 }
 
@@ -51,12 +51,6 @@ if (args[0] == "leader")
 
     // create a leader
     Leader leader = new Leader(ip, port);
-    // Send 10 commands to the follower in 1 sec intervals
-    // for (int i = 0; i < 10; i++)
-    // {
-    //     leader.sendCommand($"Hello world! {i}");
-    //     Thread.Sleep(1000);
-    // }
 
     // Create a new game
     Game game = new Game();
@@ -106,14 +100,29 @@ if (args[0] == "leader")
     {
         
         string leaderView = game.View(true);
-        string followerView = game.View(false);
 
         // Trim the end of the string
         leaderView = leaderView.TrimEnd(Environment.NewLine.ToCharArray());
-        followerView = followerView.TrimEnd(Environment.NewLine.ToCharArray());
+
+        // Create a follower command from the game state
+        // Seperate the game state that the follower need out
+        // That is only the right side of the board
+        // and the score
+        Game.Field[,] rightSide = new Game.Field[Snake.Settings.xWidthFollower, Snake.Settings.yHeightFollower];
+
+        // Copy the right side of the board to the rightSide array
+        for (int i = 0; i < Snake.Settings.xWidthFollower; i++)
+        {
+            for (int j = 0; j < Snake.Settings.yHeightFollower; j++)
+            {
+                rightSide[i, j] = game.state[i + Snake.Settings.xWidthLeader, j];
+            }
+        }
+
+        FollowerCommand commandShowBoard = new ShowBoard(rightSide, game.score);
 
         // Send the game state to the follower
-        leader.sendCommand(followerView);
+        leader.sendCommand(commandShowBoard);
 
         // Draw the game with a border,
         // orange for the snake head and body,
@@ -133,6 +142,8 @@ if (args[0] == "leader")
 
         string[] lines = leaderView.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
         Logger.Debug($"Length of lines: {lines.Length}");
+
+        Console.WriteLine($"Leader monitor | Score: {game.score}");
         for (int j = 0; j < lines.Length; j++)
         {
             // Skip the printing if line is empty
@@ -169,7 +180,7 @@ if (args[0] == "leader")
 
 
         // Wait for a second
-        Thread.Sleep(1000);
+        Thread.Sleep(400);
 
         game.Step();
 

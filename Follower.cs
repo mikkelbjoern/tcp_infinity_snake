@@ -37,56 +37,49 @@ public class Follower
         // Get the stream from the TCP client
         NetworkStream stream = tcpClient.GetStream();
         // Create a buffer to store the data
-        Byte[] data = new Byte[256];
+        Byte[] data = new Byte[1024];
         // Read the data from the stream
         stream.Read(data, 0, data.Length);
         Logger.Debug($"Received data: {System.Text.Encoding.ASCII.GetString(data)}");
-        
-        printData(System.Text.Encoding.ASCII.GetString(data));
-        // Close the TCP client
-        tcpClient.Close();
-    }
 
-    private void printData(string data)
-    {
-        // Clear the screen
-        Console.Clear();
+        // Check that the data ends with a semicolon and remove it
+        string receivedCommand = System.Text.Encoding.ASCII.GetString(data);
+        if (receivedCommand.EndsWith(";")) {
+            Logger.Debug($"Received data ends with a semicolon, removing it (Length before: {receivedCommand.Length})");
+            // Find the index of the semicolon
+            int semicolonIndex = receivedCommand.IndexOf(';');
+            // Remove the semicolon and everything after it
+            string receivedCommandWithoutSemicolon = receivedCommand.Substring(0, semicolonIndex);
+            Logger.Debug($"Length after: {receivedCommandWithoutSemicolon.Length}");
 
-        // Write on the first line that this is the second monitor
-        Console.WriteLine("Second monitor", ConsoleColor.DarkGray);
+            Logger.Debug($"Received data without semicol: {receivedCommandWithoutSemicolon}");
+            // Parse the command
+            FollowerCommand command = parseCommand(receivedCommandWithoutSemicolon);
+            // Execute the command
+            command.Execute(); 
+            
 
-        // Split the data into lines
-        string[] lines = data.Split(Environment.NewLine);
-
-        // Print each line
-        for (int j = 0; j < lines.Length; j++)
-        {
-            // Print a line at the top of the screen
-            if (j == 0)
-            {
-                Console.WriteLine("┌" + new string('─', lines[j].Length) + "┐");
-            }
-
-            Console.BackgroundColor = ConsoleColor.Yellow;
-            Console.Write("│");
-            Console.ResetColor();
-
-
-            // Print each character in the line
-            for (int k = 0; k < lines[j].Length; k++)
-            {
-                Console.BackgroundColor = ConsoleColor.Green;
-                Console.Write(lines[j][k]);
-                Console.ResetColor();
-            }
-
-            Console.Write("│");
-            Console.WriteLine();
+            // Close the TCP client
+            tcpClient.Close();
+        } else {
+            Logger.Error($"Received data does not end with a semicolon: {receivedCommand}");
+            Environment.Exit(1);
         }
 
-        // Print a line at the bottom of the screen
-        Console.WriteLine("└" + new string('─', lines[1].Length) + "┘");
+    }
 
+    private FollowerCommand parseCommand(string command)
+    {
+        Logger.Debug($"Parsing command: {command}");
+        // Parse the command by first finding the command type (before ,)
+        string commandType = command.Substring(0, command.IndexOf(','));
+
+        // Check what command type it is
+        if (commandType == "ShowBoard") {
+            // Create a new ShowBoardCommand
+            return ShowBoard.Deserialize(command);
+        }
+        return null;
     }
 
 }
