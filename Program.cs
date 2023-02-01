@@ -71,7 +71,9 @@ if (args[0] == "leader")
         string leaderView = game.View(true);
         string followerView = game.View(false);
 
-
+        // Trim the end of the string
+        leaderView = leaderView.TrimEnd(Environment.NewLine.ToCharArray());
+        followerView = followerView.TrimEnd(Environment.NewLine.ToCharArray());
 
         // Send the game state to the follower
         leader.sendCommand(followerView);

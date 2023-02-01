@@ -36,12 +36,49 @@ public class Follower
         stream.Read(data, 0, data.Length);
         Logger.Debug($"Received data: {System.Text.Encoding.ASCII.GetString(data)}");
         
-        // Clear the screen
-        Console.Clear();
-        // Print the data to the console (for now) with green text
-        Console.WriteLine(System.Text.Encoding.ASCII.GetString(data), ConsoleColor.Green);
+        printData(System.Text.Encoding.ASCII.GetString(data));
         // Close the TCP client
         tcpClient.Close();
+    }
+
+    private void printData(string data)
+    {
+        // Clear the screen
+        Console.Clear();
+
+        // Write on the first line that this is the second monitor
+        Console.WriteLine("Second monitor", ConsoleColor.DarkGray);
+
+        // Split the data into lines
+        string[] lines = data.Split('\n');
+
+        // Print each line
+        for (int j = 0; j < lines.Length; j++)
+        {
+            // Print a line at the top of the screen
+            if (j == 0)
+            {
+                Console.WriteLine("┌" + new string('─', lines[j].Length) + "┐");
+            }
+
+            Console.BackgroundColor = ConsoleColor.Yellow;
+            Console.Write("│");
+            Console.ResetColor();
+
+
+            // Print each character in the line
+            for (int k = 0; k < lines[j].Length; k++)
+            {
+                Console.Write(lines[j][k]);
+            }
+
+            Console.Write("│");
+            Console.WriteLine();
+        }
+
+        // Print a line at the bottom of the screen
+        Console.WriteLine("└" + new string('─', lines[1].Length) + "┘");
+
     }
 
 }
