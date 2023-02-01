@@ -76,7 +76,7 @@ public class ShowBoard : FollowerCommand
 
     public string Serialize()
     {
-        string command = $"{commandType},{stateToString(state)}|{score}";
+        string command = $"{commandType},{stateToString(state)}-{score}";
         Logger.Debug($"Serialized command: {command}");
         return command;
     }
@@ -94,21 +94,21 @@ public class ShowBoard : FollowerCommand
             Logger.Error($"Invalid serialized command, expected 'ShowBoard' but got '{parts[0]}'");
             Environment.Exit(1);
         }
-        string[] stateParts = parts[1].Split('|');
+        string[] stateParts = parts[1].Split('-');
         if (stateParts.Length != 2)
         {
-            Logger.Error($"Invalid serialized command, expected 2 parts in data (seperated by |) but got {stateParts.Length}");
+            Logger.Error($"Invalid serialized command, expected 2 parts in data (seperated by -) but got {stateParts.Length}");
             Environment.Exit(1);
         }
         string stateString = stateParts[1];
         
         // Split the score from the state by splitting on the pipe character
-        if (!stateString.Split('|').Length.Equals(2))
+        if (!stateString.Split('-').Length.Equals(2))
         {
-            Logger.Error($"Invalid serialized command. Either too many or too few pipe characters '{serialized}'");
+            Logger.Error($"Invalid serialized command. Either too many or too few - characters '{serialized}'");
             Environment.Exit(1);
         }
-        string[] scoreParts = stateString.Split('|');
+        string[] scoreParts = stateString.Split('-');
         if (!int.TryParse(scoreParts[1], out int score))
         {
             Logger.Error($"Invalid serialized command. Score is not an integer '{serialized}'");
