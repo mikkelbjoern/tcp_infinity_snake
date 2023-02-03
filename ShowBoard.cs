@@ -128,55 +128,6 @@ public class ShowBoard : FollowerCommand
 
     public void Execute()
     {
-        // Clear the screen
-        Console.Clear();
-
-        // Write on the first line that this is the second monitor
-        Console.WriteLine($"Follower monitor | Score: {score}", ConsoleColor.DarkGray);
-
-        // Make a line above the game state the length of the Follower screen
-        Console.WriteLine("┌" + new string('─', Snake.Settings.xWidthFollower) + "┐");
-
-        // Write the game state
-        for (int y = 0; y < state.GetLength(1); y++)
-        {
-            // The portal is always on the left side of the screen for follower
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write("│");
-            Console.ResetColor();
-
-            for (int x = 0; x < state.GetLength(0); x++)
-            {
-                switch (state[x, y])
-                {
-                    case Field.Empty:
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.Write(" ");
-                        Console.ResetColor();
-                        break;
-                    case Field.Snake:
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write("x");
-                        Console.ResetColor();
-                        break;
-                    case Field.SnakeHead:
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write("X");
-                        Console.ResetColor();
-                        break;
-                    case Field.Apple:
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("O");
-                        Console.ResetColor();
-                        break;
-                }
-            }
-            Console.Write("│");
-
-            Console.WriteLine();
-        }
-        // Bottom line
-        Console.WriteLine("└" + new string('─', Snake.Settings.xWidthFollower) + "┘");
+        Game.View(state, score, Game.PortalSide.Left);
     }
-
 }

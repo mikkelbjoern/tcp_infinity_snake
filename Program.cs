@@ -90,16 +90,12 @@ if (args[0] == "leader")
     while (true)
     {
         
-        string leaderView = game.View(true);
-
-        // Trim the end of the string
-        leaderView = leaderView.TrimEnd(Environment.NewLine.ToCharArray());
-
         // Create a follower command from the game state
         // Seperate the game state that the follower need out
         // That is only the right side of the board
         // and the score
         Game.Field[,] rightSide = new Game.Field[Snake.Settings.xWidthFollower, Snake.Settings.yHeightFollower];
+        Game.Field[,] leftSide = new Game.Field[Snake.Settings.xWidthLeader, Snake.Settings.yHeightLeader];
 
         // Copy the right side of the board to the rightSide array
         for (int i = 0; i < Snake.Settings.xWidthFollower; i++)
@@ -110,23 +106,27 @@ if (args[0] == "leader")
             }
         }
 
-        FollowerCommand commandShowBoard = new ShowBoard(rightSide, game.score);
+        // Copy the left side of the board to the leftSide array
+        for (int i = 0; i < Snake.Settings.xWidthLeader; i++)
+        {
+            for (int j = 0; j < Snake.Settings.yHeightLeader; j++)
+            {
+                leftSide[i, j] = game.state[i, j];
+            }
+        }
 
         // Send the game state to the follower
+        FollowerCommand commandShowBoard = new ShowBoard(rightSide, game.score);
         leader.sendCommand(commandShowBoard);
 
-        // Draw the game with a border,
-        // orange for the snake head and body,
-        // red for the apple and
-        // gray for the empty space
-
-        Console.Clear();
+        // Show the game state on the leader monitor
+        Game.View(leftSide, game.score, Game.PortalSide.Right);
 
         // Check if the game is over and don't format the string if it is
         // Just check if the string "game over" is in the string
-        if (leaderView.ToLower().Contains("game over"))
+        if (game.gameOver)
         {
-            Console.WriteLine(leaderView);
+            Console.WriteLine("Game over, Leader! The final score is {0}", game.score);
             // Send a game over command to the follower
             int score = game.score;
             FollowerCommand commandGameOver = new GameOver(score);
@@ -134,45 +134,6 @@ if (args[0] == "leader")
             Logger.Debug("Game over");
             Environment.Exit(0);
         }
-
-        string[] lines = leaderView.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-        Logger.Debug($"Length of lines: {lines.Length}");
-
-        Console.WriteLine($"Leader monitor | Score: {game.score}");
-        for (int j = 0; j < lines.Length; j++)
-        {
-            // Skip the printing if line is empty
-            if (lines[j].Length == 0) {
-                // Print to System.Err that the line is empty with a timestamp
-                // and the line number
-                Logger.Debug($"{DateTime.Now} Line {j} is empty");
-                continue;
-            }
-
-            // Print a line at the top of the screen
-            if (j == 0)
-            {
-                Console.WriteLine("┌" + new string('─', lines[j].Length) + "┐");
-            }
-
-            Console.Write("│", ConsoleColor.DarkGray);
-
-            // Print each character in the line
-            for (int k = 0; k < lines[j].Length; k++)
-            {
-                Console.Write(lines[j][k]);
-            }
-            // Print single character with a yellow color
-            Console.BackgroundColor = ConsoleColor.Yellow;
-            Console.Write("│");
-            Console.ResetColor();
-
-            Console.WriteLine();
-
-        }
-        // Sometimes index 0 is empty so use length of 1
-        Console.WriteLine("└" + new string('─', lines[1].Length) + "┘");
-
 
         // Wait for a second
         Thread.Sleep(400);

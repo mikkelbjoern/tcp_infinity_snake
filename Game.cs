@@ -111,61 +111,78 @@ public class Game
         }
     }
 
-    // Returns the game state as a string
-    public string View(bool isLeader)
+    public enum PortalSide { Left, Right };
+
+    // Given a game state, a score and a portal side, this method
+    // prints the game state to the console
+    public static Task View(Field[,] board, int score, PortalSide side)
     {
-        // If the game is over, write Game over in ascii art
-        if (gameOver)
+        // Clear the screen
+        Console.Clear();
+
+        string sideString = side == PortalSide.Left ? "Left" : "Right";
+
+        // Write on the first line that this is the second monitor
+        Console.WriteLine($"{sideString} monitor | Score: {score}", ConsoleColor.DarkGray);
+
+        // Make a line above the game state the length of the Follower screen
+        Console.WriteLine("┌" + new string('─', Snake.Settings.xWidthFollower) + "┐");
+
+        // Write the game state
+        for (int y = 0; y < board.GetLength(1); y++)
         {
-            return "Game over, Leader! Your final score was: " + score;
-        }
-
-        // Create a new string builder
-        StringBuilder sb = new StringBuilder();
-
-        // Divide the x-axis into 2 parts one for leader and one for follower
-        int xWidthLeader = Snake.Settings.xWidthLeader;
-        int xWidthFollower = Snake.Settings.xWidthFollower;
-
-        Logger.Debug($"Width of leader: {xWidthLeader}, width of follower: {xWidthFollower}");
-
-        int xStart = isLeader ? 0 : xWidthLeader;
-        int xEnd = isLeader ? xWidthLeader : xWidth;
-
-        Logger.Debug($"Viewing game state for {isLeader} from {xStart} to {xEnd}");
-
-        // Loop through the game state
-        for (int y = 0; y < yHeight; y++)
-        {
-            for (int x = xStart; x < xEnd; x++)
+            // The portal is always on the left side of the screen for follower
+            if (side == PortalSide.Left)
             {
-                // If the position is empty, add a space
-                if (state[x, y] == Field.Empty)
+                Console.BackgroundColor = ConsoleColor.Yellow;
+                Console.Write("│");
+                Console.ResetColor();
+            } else {
+                Console.Write("│");
+            }
+
+            for (int x = 0; x < board.GetLength(0); x++)
+            {
+                switch (board[x, y])
                 {
-                    sb.Append(" ");
-                }
-                // If the position is the player, add an X
-                else if (state[x, y] == Field.SnakeHead)
-                {
-                    sb.Append("X");
-                }
-                // If the position is the player, add an X
-                else if (state[x, y] == Field.Snake)
-                {
-                    sb.Append("x");
-                }
-                // If the position is an apple, add an O
-                else if (state[x, y] == Field.Apple)
-                {
-                    sb.Append("O");
+                    case Field.Empty:
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.Write(" ");
+                        Console.ResetColor();
+                        break;
+                    case Field.Snake:
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write("x");
+                        Console.ResetColor();
+                        break;
+                    case Field.SnakeHead:
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write("X");
+                        Console.ResetColor();
+                        break;
+                    case Field.Apple:
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write("O");
+                        Console.ResetColor();
+                        break;
                 }
             }
-            // Add a new line
-            sb.Append(Environment.NewLine);
-        }
+            // The portal is always on the left side of the screen for follower
+            if (side == PortalSide.Right)
+            {
+                Console.BackgroundColor = ConsoleColor.Yellow;
+                Console.Write("│");
+                Console.ResetColor();
+            } else {
+                Console.Write("│");
+            }
 
-        // Return the string
-        return sb.ToString();
+            Console.WriteLine();
+        }
+        // Bottom line
+        Console.WriteLine("└" + new string('─', Snake.Settings.xWidthFollower) + "┘");
+
+        return Task.CompletedTask;
     }
 
     // Steps the game forward one step

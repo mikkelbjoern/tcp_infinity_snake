@@ -41,7 +41,6 @@ class GameOver : FollowerCommand
     // Execute the command
     public void Execute()
     {
-        Console.Clear();
         // Print the score
         Console.WriteLine("Game over, Follower! Your final score was: " + score);
         // Exit the program
