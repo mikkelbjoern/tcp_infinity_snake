@@ -1,13 +1,4 @@
-﻿// A proof of concept to see that a
-// client can connect to a server and send data
-
-// check the first argument to see if it is a leader or follower
-
-int port = 5000; // port to use
-
-Console.WriteLine("Starting server");
-
-// Check that two arguments are passed
+﻿// Check that two arguments are passed
 if (args.Length != 2)
 {
     Logger.Error("Invalid number of arguments");
@@ -50,7 +41,7 @@ if (args[0] == "leader")
     ip = System.Net.IPAddress.Parse(args[1]);
 
     // create a leader
-    Leader leader = new Leader(ip, port);
+    Leader leader = new Leader(ip, Snake.Settings.port);
 
     // Create a new game
     Game game = new Game();
@@ -194,7 +185,8 @@ else if (args[0] == "follower")
     // Set thread name to FollowerMain
     Thread.CurrentThread.Name = "FollowerMain";
     // create a follower
-    Follower follower = new Follower(ip, port);
+    Follower follower = new Follower(ip, Snake.Settings.port);
+
     // Wait for the follower to receive a command
     while (true)
     {

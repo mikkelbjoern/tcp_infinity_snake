@@ -63,7 +63,8 @@ public class Follower
             tcpClient.Close();
         } else {
             Logger.Error($"Received data does not end with a semicolon: {receivedCommand}");
-            Environment.Exit(1);
+
+            throw new Exception("Received data does not end with a semicolon");
         }
 
     }
@@ -79,7 +80,8 @@ public class Follower
             // Create a new ShowBoardCommand
             return ShowBoard.Deserialize(command);
         }
-        return null;
+        // Throw an error
+        throw new Exception($"Unknown command type: {commandType}");
     }
 
 }
