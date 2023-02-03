@@ -64,7 +64,9 @@ public class Game
         // Set the player's position in the game state to 1
         state[playerX, playerY] = Field.SnakeHead;
 
-        // Generate an apple
+        // Generate three apples
+        generateApple();
+        generateApple();
         generateApple();
     }
 
