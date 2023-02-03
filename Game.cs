@@ -117,7 +117,7 @@ public class Game
         // If the game is over, write Game over in ascii art
         if (gameOver)
         {
-            return "Game Over! Score: " + score;
+            return "Game over, Leader! Your final score was: " + score;
         }
 
         // Create a new string builder

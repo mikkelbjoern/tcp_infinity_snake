@@ -80,6 +80,10 @@ public class Follower
             // Create a new ShowBoardCommand
             return ShowBoard.Deserialize(command);
         }
+        if (commandType == "GameOver") {
+            // Create a new GameOverCommand
+            return GameOver.Deserialize(command);
+        }
         // Throw an error
         throw new Exception($"Unknown command type: {commandType}");
     }

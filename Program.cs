@@ -127,8 +127,12 @@ if (args[0] == "leader")
         if (leaderView.ToLower().Contains("game over"))
         {
             Console.WriteLine(leaderView);
+            // Send a game over command to the follower
+            int score = game.score;
+            FollowerCommand commandGameOver = new GameOver(score);
+            leader.sendCommand(commandGameOver);
             Logger.Debug("Game over");
-            break;
+            Environment.Exit(0);
         }
 
         string[] lines = leaderView.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
