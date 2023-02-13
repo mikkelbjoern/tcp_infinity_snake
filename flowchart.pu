@@ -1,0 +1,40 @@
+@startuml tcp_snake
+title Communication between Leader and Follower
+actor Leader
+actor Follower
+
+' Make sure the connection is made after Server is started
+
+hnote over Follower
+    Start TCP Server
+end note
+
+Leader -> Follower: Connect to server
+
+hnote over Leader
+    Initialize game
+end note
+
+loop until GameOver
+    hnote over Leader
+        Wait for input for a while
+    end note
+    hnote over Leader 
+        Update game state
+    end note
+    Leader -> Follower: **ShowBoard** Update Screen
+    hnote over Leader, Follower
+        Update screen
+    end note
+end
+Leader -> Follower: **GameOver** Send final score
+
+hnote over Leader, Follower
+    Show game over screen
+end note
+
+
+
+
+
+@enduml

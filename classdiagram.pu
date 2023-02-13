@@ -1,0 +1,93 @@
+@startuml
+class Settings {
+    port: int
+    xWidth: int
+    yHeight: int
+    xWidthLeader: int
+    yHeightLeader: int
+    xWidthFollower: int
+    yHeightFollower: int
+}
+class Leader {
+    game: Game
+    port: int
+    +Run() : void 
+    +sendCommand(command: FollowerCommand) : Task
+}
+class Follower {
+    port: int
+    +Run() : void 
+    +SendCommand(FollowerCommand) : Task
+    +waitForCommand() : Task
+}
+class Game {
+    score: int
+    board: Field[,]
+    playerX: int
+    playerY: int
+    gameOver: bool
+    tail : List<Tuple<int, int>>
+    +generateApple() : void
+    +Update(Action) : void
+    +View(Field[,], score: int, PortalSide) : Task
+    +Step() : void
+    +GameOver() : void
+}
+Game -- Direction : > Defines
+Game -- Field : > Defines
+Game -- Action : > Defines
+Game -- PortalSide : > Defines
+
+enum PortalSide {
+    Left
+    Right
+}
+enum Action {
+    Up
+    Down
+    Left
+    Right
+}
+enum Direction {
+    North
+    South
+    East
+    West
+}
+enum Field {
+    Empty
+    Snake
+    SnakeHead
+    Apple
+}
+interface FollowerCommand {
+    +Serialize() : string
+    +Deserialize(string) : FollowerCommand
+    +Execute() : void
+}
+class ShowBoard {
+    state: Field[,]
+    score: int
+    +Execute() : void
+    +Serialize() : string
+    +Deserialize(string) : FollowerCommand
+    #serializeField(Field) : string
+    #deserializeField(string) : Field
+    #stateToString(Field[,]) : string
+}
+class GameOver {
+    score: int
+    +Execute() : void
+    +Serialize() : string
+    +Deserialize(string) : FollowerCommand
+}
+
+
+Leader -- Game: > Creates
+Leader - FollowerCommand: > Creates and sends
+FollowerCommand -- ShowBoard: < Implements
+FollowerCommand -- GameOver: < Implements
+
+FollowerCommand - Follower : Deserializes and executes >
+
+@enduml

@@ -1,0 +1,38 @@
+@startuml
+
+start
+
+if (Am I leader?) then (Yes)
+    :Create a **Leader** object;
+    partition Leader.run() {
+        repeat
+        :Create a **FollowerCommand** object;
+        :Serialize the **FollowerCommand** object;
+        :Send the serialized **FollowerCommand** to ip;
+        repeat while (GameOver?) is (false)
+    }
+    :Draw the Game Over screen;
+    stop
+else if (Am I Follower?) then (Yes)
+    :Create a **Follower** object;
+    partition Follower.run() {
+        while (Latest command is not GameOver)
+        :Wait for a **FollowerCommand** object;
+        :Deserialize the **FollowerCommand** object;
+        if (ShowBoard?) then (Yes)
+            :Draw the board;
+        else if (Game Over?) then (Yes)
+            :Draw the Game Over screen;
+        else (Neither)
+            stop
+        endif
+        endwhile
+    }
+    stop
+else (Neither)
+    :Fail and quit;
+    stop
+endif
+
+
+@enduml
