@@ -17,7 +17,7 @@ else if (Am I Follower?) then (Yes)
     :Create a **Follower** object;
     partition Follower.run() {
         while (Latest command is not GameOver)
-        :Wait for a **FollowerCommand** object;
+        :Wait for a TCP message;
         :Deserialize the **FollowerCommand** object;
         if (ShowBoard?) then (Yes)
             :Draw the board;

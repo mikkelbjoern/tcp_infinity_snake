@@ -1,0 +1,21 @@
+@startuml
+hide empty description
+[*] --> GameInitialized: Initialize **Game** object
+GameInitialized --> GameWaiting: Start a timed loop
+GameWaiting --> Step: **Step()** method called
+Step --> GameWaiting: If the game is not over - continue the loop
+
+
+[*] --> ControlThread: Start a seperate thread to listen for user input
+ControlThread -> CheckButton: Check if the button is an arrow
+CheckButton -[dotted,#Gray]-> GameWaiting: If it was an arrow - provoke **Update(Action)** method
+CheckButton -> ControlThread: Wait for another button press
+Step --> GameOver: If the game is over - stop the loop
+
+Step: Next state is calculated
+
+OutsideWorld -[dotted,#Gray]> GameWaiting: Queue for game state using **View()** method
+
+OutsideWorld: Everything around the game itself
+
+@enduml
